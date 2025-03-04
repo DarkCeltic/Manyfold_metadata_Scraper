@@ -6,7 +6,7 @@ from metaDataFiller.metadataGathering.thingiverse_metadata_gathering import get_
 import sys
 
 get_3d_files()
-# get_printables_db_data()
+get_printables_db_data()
 get_thingiverse_DB_data()
 close_connection()
 print('Processing finished')
