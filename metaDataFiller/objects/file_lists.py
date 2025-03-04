@@ -1,0 +1,3 @@
+pdforreadme = {'printables': [],
+               'thingiverse': []}
+nopdforreadme = []
