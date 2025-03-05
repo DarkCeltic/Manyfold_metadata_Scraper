@@ -5,6 +5,7 @@ from selenium.common import SessionNotCreatedException, TimeoutException
 from urllib3.exceptions import ReadTimeoutError
 
 from metaDataFiller.GlobalVariables.Global import add_new_creator_urls, add_new_model_urls, convert_license
+from metaDataFiller.customErrors.notAvailableError import notAvailableError
 from metaDataFiller.webScrapers import printablesWebScraper
 from metaDataFiller.objects.creator import Creator
 from metaDataFiller.objects.model import Model
@@ -30,25 +31,12 @@ def get_pdf_data(file, model: Model, creator: Creator):
                         tmp_username = tmp_creator_url.split('@')[1]
                 elif 'model/' in link["uri"]:
                     tmp_model_url = link["uri"]
+
     if tmp_model_url and 'printables' in tmp_model_url:
         parsed = urlparse(tmp_model_url)
         if not parsed.netloc.startswith('www.'):
             parsed = parsed._replace(netloc='www.' + parsed.netloc)
-        # try:
-        printables_info = printablesWebScraper.scrape_printables(parsed.geturl(), creator, model)
-        # except (TimeoutException, ReadTimeoutError,SessionNotCreatedException):
-        #     return
-        # if printables_info == 'url no longer available':
-        #     if 'www' not in tmp_model_url:
-        #         parsed_url = urlparse(tmp_model_url)
-        #         netloc = 'www.' + parsed_url.netloc
-        #         tmp_model_url = urlunparse(parsed_url._replace(netloc=netloc))
-        #     add_new_model_urls(tmp_model_url, model)
-        #     model.license = convert_license(tmp_license)
-        #     if tmp_username:
-        #         creator.creatorName = tmp_username
-        #     if 'www' not in tmp_creator_url:
-        #         parsed_url = urlparse(tmp_creator_url)
-        #         netloc = 'www.' + parsed_url.netloc
-        #         tmp_creator_url = urlunparse(parsed_url._replace(netloc=netloc))
-        #     add_new_creator_urls(tmp_creator_url, creator)
+        try:
+            printablesWebScraper.scrape_printables(parsed.geturl(), creator, model)
+        except (TimeoutException, ReadTimeoutError,SessionNotCreatedException, notAvailableError):
+            return

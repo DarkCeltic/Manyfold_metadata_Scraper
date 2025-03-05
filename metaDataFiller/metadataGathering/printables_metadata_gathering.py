@@ -1,3 +1,5 @@
+import os.path
+
 from selenium.common import SessionNotCreatedException
 from urllib3.exceptions import ReadTimeoutError
 
@@ -5,12 +7,9 @@ from metaDataFiller.GlobalVariables.Global import populate_models, add_to_creato
 from metaDataFiller.customErrors.notAvailableError import notAvailableError
 from metaDataFiller.fileHandlers.pdfHandler import get_pdf_data
 from metaDataFiller.metadataProcessing.modelProcessor import process_data
+from metaDataFiller.objects.creator import Creator
 from metaDataFiller.objects.file_lists import pdforreadme, nopdforreadme
 from metaDataFiller.objects.model import Model
-
-from metaDataFiller.objects.creator import Creator
-
-import os.path
 
 
 def get_printables_db_data():
@@ -21,8 +20,6 @@ def get_printables_db_data():
         creator = Creator()
         if populate_models(filename, model, creator) == "Error":
             continue
-        # if creator.existingCreatorUrls != 'None':
-        #     return
         try:
             get_pdf_data(file, model, creator)
         except notAvailableError:
@@ -35,3 +32,4 @@ def get_printables_db_data():
             pass
         process_data(model, creator)
         add_to_creators_list(creator)
+        print(model.fileName + ' finished.')

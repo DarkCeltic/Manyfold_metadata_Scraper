@@ -1,10 +1,9 @@
 import glob
 import json
 import os.path
-from operator import truediv
 
-from metaDataFiller.objects import file_lists
 from metaDataFiller.dbHandler.databaseHandler import config
+from metaDataFiller.objects import file_lists
 
 creator_list = {}
 with open(os.getcwd() + '/license_info') as f:
@@ -33,16 +32,7 @@ def find_files_to_proces(path):
     printables = []
     thingiverse = []
 
-    # ----------------------------------------------------------
-    # for file in sorted(glob.glob(path + '**/*#*', recursive=True)):
-    #     print(file)
-    # ----------------------------------------------------------
-
-    # for root, dirs, files in os.walk(path):
     for file in sorted(glob.glob(path + '**/*#*', recursive=True)):
-    # if len(dirs) != 0:
-        #     continue
-        # if any(fi.endswith('.pdf') for fi in files) and '.Trash' not in root:
         if any(fi.endswith('.pdf') for fi in os.listdir(file)):
             printables.append(glob.glob(file + '/' + "*.pdf")[0])
         elif any(fi.endswith('README.txt') for fi in os.listdir(file)):

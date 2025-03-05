@@ -3,10 +3,11 @@ import time
 from selenium import webdriver
 from selenium.common import TimeoutException, SessionNotCreatedException, NoSuchElementException
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service as ChromeService
 
 from metaDataFiller.GlobalVariables.Global import add_new_model_urls, convert_license, add_new_creator_urls
 from metaDataFiller.customErrors.notAvailableError import notAvailableError
@@ -16,18 +17,19 @@ from metaDataFiller.objects.model import Model
 
 def scrape_thingiverse(url: str, creator: Creator, model: Model):
     try:
-        service = Service('/home/kenneth/.cache/selenium/chromedriver/linux64/133.0.6943.98/chromedriver')
         options = Options()
         options.add_argument('--no-sandbox')
         options.add_argument("--remote-debugging-port=9222")
         options.add_argument('--headless')
         options.add_argument('--disable-gpu')
-        driver = webdriver.Chrome(service=service, options=options)
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
         driver.get(url)
         wait = WebDriverWait(driver, timeout=20)
         try:
             driver.find_element(By.XPATH,
                                 "//*[text()='It looks like this Thing has been removed or has never existed in Thingiverse.']")
+            driver.stop_client()
+            driver.close()
             driver.quit()
             raise notAvailableError('url no longer available')
         except NoSuchElementException:
@@ -53,6 +55,8 @@ def scrape_thingiverse(url: str, creator: Creator, model: Model):
         time.sleep(5)
 
         add_new_model_urls(driver.current_url, model)
+        driver.stop_client()
+        driver.close()
         driver.quit()
     except SessionNotCreatedException as e:
         print(e)

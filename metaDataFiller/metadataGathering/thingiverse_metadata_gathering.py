@@ -1,14 +1,12 @@
-import configparser
+import os.path
 
 from metaDataFiller.GlobalVariables.Global import populate_models, add_to_creators_list
 from metaDataFiller.customErrors.notAvailableError import notAvailableError
 from metaDataFiller.fileHandlers import readmeHandler
 from metaDataFiller.metadataProcessing.modelProcessor import process_data
+from metaDataFiller.objects.creator import Creator
 from metaDataFiller.objects.file_lists import pdforreadme, nopdforreadme
 from metaDataFiller.objects.model import Model
-from metaDataFiller.objects.creator import Creator
-
-import os.path
 
 
 def get_thingiverse_DB_data():
@@ -29,3 +27,4 @@ def get_thingiverse_DB_data():
             pass
         process_data(model, creator)
         add_to_creators_list(creator)
+        print(model.fileName + ' finished')

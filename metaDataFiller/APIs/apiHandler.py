@@ -16,7 +16,6 @@ url2 = '?access_token=' + api_key
 
 
 def thingiverse_api_get_thing(thing_id):
-    formatted_response = {}
     api_url = url + thing_id + url2
     headers = {
         "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:131.0) Gecko/20100101 Firefox/131.0"

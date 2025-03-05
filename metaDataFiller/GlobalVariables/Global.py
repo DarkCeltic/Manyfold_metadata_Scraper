@@ -1,18 +1,14 @@
-from metaDataFiller.dbHandler.databaseHandler import get_creator_links_from_db, get_model_info_from_db, \
-    get_model_links_from_db, \
-    get_creator
-from metaDataFiller.fileHandlers.fileHandler import creator_list, license_dict
 from urllib.parse import *
 
-from metaDataFiller.objects.file_lists import pdforreadme
+from metaDataFiller.dbHandler.databaseHandler import get_creator_links_from_db, get_model_info_from_db, \
+    get_creator
+from metaDataFiller.fileHandlers.fileHandler import creator_list, license_dict
 
 
 def add_to_creators_list(creator):
     if len(creator_list) == 0 and creator.creatorId != 'None':
         creator_list[creator.creatorId] = creator
     else:
-        # for c in creator_list:
-        # if creator.creatorId not in creator_list:
         if creator.creatorId == 'None':
             pass
         elif creator.creatorId not in creator_list.keys():

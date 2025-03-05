@@ -1,11 +1,5 @@
-import configparser
-import json
-from collections import defaultdict
-from urllib.error import HTTPError
-from urllib.parse import quote
-from httpx import Client
-from parsel import Selector
 from urllib.request import Request, urlopen
+
 from bs4 import BeautifulSoup
 
 url = 'https://www.google.com/search?q=allintext%3A'
@@ -19,7 +13,7 @@ def scrape_google_for_file_info(search_params):
         "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:131.0) Gecko/20100101 Firefox/131.0"
     }
     req = Request(api_url, headers=headers)
-    test = req.data
+    # test = req.data
     response = urlopen(req)
     soup = BeautifulSoup(response, "html.parser")
     heading = soup.find_all('h1')

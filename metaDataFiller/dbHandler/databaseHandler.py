@@ -1,8 +1,8 @@
-import psycopg2
 import configparser
 
-config = configparser.ConfigParser()
+import psycopg2
 
+config = configparser.ConfigParser()
 # Read the configuration file
 config.read('config.ini')
 
@@ -23,14 +23,11 @@ cur = conn.cursor()
 
 
 def get_model_info_from_db(filename):
-    # cur.execute('SELECT id, url, linkable_type, linkable_id, created_at, updated_at ' +
-    #             'FROM links where linkable_id in (select id from models where path like \'%' + filename + '\')  and linkable_type = \'Model\';')
     cur.execute(
         'SELECT m.id, creator_id, license, array(select url FROM public.links where linkable_type = \'Model\' '
         'and linkable_id = m.id) as model_urls, (select name from public.creators c where c.id = m.creator_id), '
         'array(select url FROM public.links where linkable_type = \'Creator\' and linkable_id = m.creator_id) as '
         'creator_urls FROM public.models m where path like (\'%' + filename + '\');')
-    # return cur.fetchall()
     # TODO add a check here if larger than one should throw error
     return turn_sql_to_dict()
 
@@ -47,15 +44,9 @@ def get_creator_links_from_db(creator_id):
     return cur.fetchall()
 
 
-# def get_creator(creator_name: str):
-#     cur.execute(
-#         'SELECT id, name, created_at, updated_at, notes, caption, slug FROM creators where slug = \'' + creator_name.lower() + '\';')
-#     # return True if len(cur.fetchall()) > 1 else False
-#     return turn_sql_to_dict()
 def get_creator(creator_id: str):
     cur.execute(
         'SELECT name FROM creators where id = ' + creator_id + ';')
-    # return True if len(cur.fetchall()) > 1 else False
     return cur.fetchall()[0][0]
 
 
@@ -83,18 +74,16 @@ def create_creator(creator_name, public_id):
         'INSERT INTO creators (name, created_at, updated_at, slug, public_id) values(\'' + creator_name +
         '\',current_timestamp,current_timestamp,\'' + str.lower(creator_name) + '\', \'' + public_id + '\');')
     conn.commit()
-    # cur.execute('SELECT *' +
-    #             'FROM creators where name = \'' + creator_name + '\';')
     cur.execute('SELECT id ' +
                 'FROM creators where name = \'' + creator_name + '\';')
     return cur.fetchall()
-    # return turn_sql_to_dict()
 
 
 def add_creator_to_links_table(creator_id, creator_url):
     try:
-        cur.execute('INSERT INTO links (url,linkable_type, linkable_id, created_at, updated_at) values (\'' + creator_url +
-                '\',\'Creator\',' + str(creator_id) + ',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)')
+        cur.execute(
+            'INSERT INTO links (url,linkable_type, linkable_id, created_at, updated_at) values (\'' + creator_url +
+            '\',\'Creator\',' + str(creator_id) + ',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)')
     except psycopg2.errors.SyntaxError as d:
         print(d)
     except Exception as e:
