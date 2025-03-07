@@ -101,12 +101,6 @@ def add_creator_to_model(creator_id, model_id):
     conn.commit()
 
 
-def add_modified_date_to_model(modified_date, model_id):
-    cur.execute(
-        'update models set notes = concat(notes, \' ' + modified_date + '\') where id = ' + str(model_id) + ' ;')
-    conn.commit()
-
-
 def add_model_to_links_table(model_url, model_id):
     cur.execute(
         'INSERT INTO links (url,linkable_type, linkable_id, created_at, updated_at) values (\'' + model_url +

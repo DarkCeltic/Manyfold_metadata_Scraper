@@ -19,14 +19,6 @@ def get_3d_files():
     path = config.get('3dFilesLocation', 'path')
     find_files_to_proces(path)
 
-    # TODO this is starter code to query google for missing files, will work on later
-    # for f in nopdforreadme:
-    #     filename = os.path.basename(f['url'])
-    #     search_params = '"' + filename.split('#')[0].replace(' ','+') + '"'
-    #     for file in f['files']:
-    #         search_params += '+"' + file.replace(' ', '+') + '"'
-    # googleScraper.scrape_google_for_file_info(search_params)
-
 
 def find_files_to_proces(path):
     printables = []
